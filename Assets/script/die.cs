@@ -7,10 +7,11 @@ public class die : MonoBehaviour
 {
     public GameObject Lightsaber;
     public GameObject tinyexplosion;
+    public SteamVR_TrackedObject sabercontrol;
 
     //public AudioClip explosion;
     private Vector3 Offset = new Vector3(0.0f, 1.0f, 0.0f);
-    ushort intensity = 5000;
+    ushort intensity = 50000;
 
     void OnTriggerEnter(Collider other)
     {
@@ -28,8 +29,14 @@ public class die : MonoBehaviour
 
             //GameObject.Destroy(this.gameObject);
             GameObject.Destroy(this.gameObject.transform.parent.gameObject);
-            ViveInput.TriggerHapticPulse(HandRole.RightHand, intensity);
-            /*Input XRController = Input.GetDeviceAtXRNode(XRNode.RightHand);
+            //ViveInput.TriggerHapticPulse(HandRole.RightHand, intensity);
+            SteamVR_Controller.Input((int)sabercontrol.index).TriggerHapticPulse(intensity);
+           // for (float i = 0; i < 100; i += Time.smoothDeltaTime)
+           // {
+            //    SteamVR_Controller.Input((int)sabercontrol.index).TriggerHapticPulse(intensity);
+                //yield return null;
+           // }
+            /*
             if (XRController.IsValid)
             {
                 HapticCapabilities hapcap = new HapticCapabilities();
