@@ -7,7 +7,9 @@ public class FollowPath : MonoBehaviour
 {
     public PathCreator pathCreator;
     public float speed = 5;
-    float distanceTravelled;
+    float distanceTravelled = 0f;
+
+    public GameObject facingTarget;
 
 
     // Start is called before the first frame update
@@ -17,10 +19,12 @@ public class FollowPath : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
+        this.gameObject.transform.LookAt(facingTarget.transform);
+
         distanceTravelled += speed * Time.deltaTime;
         transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled);
-        transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled);
+        //transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled);
     }
 }

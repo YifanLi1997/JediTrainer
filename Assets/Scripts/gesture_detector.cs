@@ -63,25 +63,25 @@ public class gesture_detector : MonoBehaviour
 
     }
 
-    Gesture Recognize()
-    {
-        Gesture currentgest = new Gesture();
-        float currentmin = Mathf.Infinity;
-        foreach (var mov in forcemovements)
-        {
-            float sumDist = 0.0f;
-            bool isDiscarded = false;
-            for(int i =0; i< mov.Postion_data.Count; i++)
-            {
-                Vector3 currentpos = forcehand.transform.position;
-                float distance = Vector3.Distance(currentpos, mov.Postion_data[i]);
+    //Gesture Recognize()
+    //{
+    //    Gesture currentgest = new Gesture();
+    //    float currentmin = Mathf.Infinity;
+    //    foreach (var mov in forcemovements)
+    //    {
+    //        float sumDist = 0.0f;
+    //        bool isDiscarded = false;
+    //        for(int i =0; i< mov.Postion_data.Count; i++)
+    //        {
+    //            Vector3 currentpos = forcehand.transform.position;
+    //            float distance = Vector3.Distance(currentpos, mov.Postion_data[i]);
 
-            }
-        }
+    //        }
+    //    }
 
 
 
-    }
+    //}
   
 
 
