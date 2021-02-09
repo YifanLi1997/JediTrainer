@@ -24,7 +24,7 @@ public class die : MonoBehaviour
             //this.gameObject.GetComponent<AudioSource>().clip = explosion;
             //this.gameObject.GetComponent<AudioSource>().Play();
 
-            GameObject.Instantiate(tinyexplosion, this.transform.position+ Offset, this.transform.rotation);
+            GameObject.Destroy(GameObject.Instantiate(tinyexplosion, this.transform.position+ Offset, this.transform.rotation),3);
 
 
             //GameObject.Destroy(this.gameObject);
