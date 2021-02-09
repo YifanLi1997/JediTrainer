@@ -8,8 +8,7 @@ public struct Gesture
 {
     public string name;
     public List<Vector3> Postion_data;
-    
-    public UnityEvent Onregognize;
+    //public UnityEvent Onregognize;
 
 }
 
@@ -17,72 +16,207 @@ public class gesture_detector : MonoBehaviour
 {
     public SteamVR_TrackedController forcehand;
     private bool forceactive = false;
-    public bool record = false;
+    private bool record = false;
     public List<Gesture> forcemovements;
+    public float thresholdmovement = 0.05f;
+    private List<Vector3> data, datainterest;
+    public bool training_mode = false;
+    public string forcemotionname;
+    private bool hasregognized;
+
+    private Gesture forcegesture;
+    private GameObject target;
+    public string ennemi;
+    private int counter = 0;
+    private GameObject targetfroce;
+    private bool lokedtarget = false;
+
 
     // Start is called before the first frame update
     void Start()
     {
         forcehand.TriggerClicked += onTrigclic;
         forcehand.TriggerUnclicked += offTrigclic;
+        forcegesture = new Gesture();
+        targetfroce = new GameObject();
+
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(forceactive && record)
+        if (forceactive && !record)
         {
-            Save();
+            Initmov();
         }
 
-        
+
+        if (forceactive && record)
+        {
+            UpdateMov();
+        }
+
+        if (!forceactive && record)
+        {
+            forcegesture = EndMov();
+            hasregognized = !forcegesture.Equals(new Gesture());
+            Debug.Log(hasregognized);
+            //Debug.Log(lokedtarget);
+        }
+
+        if (hasregognized && lokedtarget)
+        {
+            Debug.Log("ok");
+            Callforce(forcegesture.name);
+        }
+
+
     }
+
+
     public void onTrigclic(object sender, ClickedEventArgs e)
     {
         forceactive = true;
+
+        Ray ray = new Ray(forcehand.transform.position, forcehand.transform.forward);
+        RaycastHit hitInfo;
+        bool hasGroundTarget = Physics.Raycast(ray, out hitInfo);
+        if (hasGroundTarget)
+        {
+            target = hitInfo.collider.gameObject;
+            Debug.Log(target.name);
+            if (target.name == ennemi)
+            {
+                lokedtarget = true;
+                targetfroce = target.gameObject.transform.parent.gameObject;
+            }
+        }
     }
+
     public void offTrigclic(object sender, ClickedEventArgs e)
     {
         forceactive = false;
     }
 
-    void Save()
+    void Initmov()
     {
-        Gesture g = new Gesture();
-        g.name = "Pull";
-        List<Vector3> data = new List<Vector3>();
-        int compteur = 0;
-        while (forceactive && compteur<50)
-        {
-            data.Add(forcehand.transform.position);
-            compteur += 1;
-        }
-
-        g.Postion_data = data;
-        forcemovements.Add(g);
+        data = new List<Vector3>();
+        datainterest = new List<Vector3>();
+        record = true;
+        data.Add(forcehand.transform.position);
 
     }
 
-    //Gesture Recognize()
-    //{
-    //    Gesture currentgest = new Gesture();
-    //    float currentmin = Mathf.Infinity;
-    //    foreach (var mov in forcemovements)
-    //    {
-    //        float sumDist = 0.0f;
-    //        bool isDiscarded = false;
-    //        for(int i =0; i< mov.Postion_data.Count; i++)
-    //        {
-    //            Vector3 currentpos = forcehand.transform.position;
-    //            float distance = Vector3.Distance(currentpos, mov.Postion_data[i]);
+    void UpdateMov()
+    {
+        Vector3 currentpos = forcehand.transform.position;
+        Vector3 lastpos = data[data.Count - 1];
+        if (Vector3.Distance(currentpos, lastpos) > thresholdmovement)
+        {
+            data.Add(forcehand.transform.position);
+            datainterest.Add(data[data.Count - 1] - data[data.Count - 2]);
+        }
+    }
 
-    //        }
-    //    }
+    Gesture EndMov()
+    {
+        Gesture g = new Gesture();
+        if (training_mode)
+        {
+            if (data.Count > 1)
+            {
+
+                g.name = forcemotionname;
+                g.Postion_data = datainterest;
+                forcemovements.Add(g);
+            }
+        }
+
+        else
+        {
+            if (forcemovements.Count > 0)
+            {
+                g = Recognise_gesture();
+                //Debug.Log(g.name);
+                //Callforce(g);
+                //g.Onregognize.Invoke()
+            }
+            else
+            {
+                Debug.Log("NO forcemovement saved");
+            }
+
+
+        }
+        record = false;
+        return g;
+    }
+
+    Gesture Recognise_gesture()
+    {
+        Gesture regonied_move = new Gesture();
+
+        float sumDistmin = Mathf.Infinity;
+        // float minG = Mathf.Infinity;
+        foreach (var mov in forcemovements)
+        {
+            //Debug.Log(mov.name);
+            float sumDist = 0.0f;
+            int min = Mathf.Min(10, datainterest.Count);
+            //minG = Mathf.Min(min, minG);
+            for (int i = 0; i < min; i++)
+            {
+                sumDist += Vector3.Distance(datainterest[i], mov.Postion_data[i]);
+            }
+
+            if (sumDist < sumDistmin)
+            {
+                regonied_move = mov;
+                sumDistmin = sumDist;
+            }
+        }
+        return regonied_move;
+    }
 
 
 
-    //}
-  
+    void Callforce(string name)
+    {
+        Debug.Log(name);
+        if (targetfroce == null)
+        {
+            lokedtarget = false;
+            return;
+        }
+
+        if (name == "pull")
+        {
+
+            targetfroce.transform.LookAt(forcehand.transform);
+            targetfroce.transform.position += targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
+            //targetfroce.transform.Rotate(new Vector3(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
+        }
+
+        if (name == "push")
+        {
+            targetfroce.transform.LookAt(forcehand.transform);
+            targetfroce.transform.position -= targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
+            targetfroce.transform.position += targetfroce.transform.up * 1 * Time.smoothDeltaTime;
+            counter++;
+            if (counter > 100)
+            {
+                GameObject.Destroy(targetfroce);
+                lokedtarget = false;
+            }
+
+        }
+
+
+
+    }
+
+
 
 
 }
+

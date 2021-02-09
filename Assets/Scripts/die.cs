@@ -15,12 +15,12 @@ public class die : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("before collided");
+        //Debug.Log("before collided");
         if (other.gameObject == Lightsaber)
         {
 
 
-            Debug.Log("collided");
+            //Debug.Log("collided");
             //this.gameObject.GetComponent<AudioSource>().clip = explosion;
             //this.gameObject.GetComponent<AudioSource>().Play();
 
