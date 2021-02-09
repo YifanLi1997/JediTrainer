@@ -32,6 +32,6 @@ public class ShootTrainingLaser : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject laser = Instantiate(laserPrefab, shootingPlace.position, Quaternion.identity) as GameObject;
+        GameObject laser = Instantiate(laserPrefab, shootingPlace.position, shootingPlace.rotation) as GameObject;
     }
 }

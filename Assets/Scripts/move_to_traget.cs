@@ -7,7 +7,7 @@ public class move_to_traget : MonoBehaviour
     public GameObject thePlayer;
     public GameObject bullet;
     public float speed = 1.0f;
-
+    public GameObject offset;
     int counter = 0;
     
 
@@ -19,17 +19,17 @@ public class move_to_traget : MonoBehaviour
     void FixedUpdate()
     {
         //look at the player
-        this.gameObject.transform.LookAt(thePlayer.transform);
+        this.gameObject.transform.LookAt(new Vector3(thePlayer.transform.position.x, this.gameObject.transform.position.y, thePlayer.transform.position.z));
 
         //move towards the player
         this.gameObject.transform.position += transform.forward *speed * Time.smoothDeltaTime;
 
         counter++;
 
-        if (counter > 100)
+        if (counter > 300)
         {
             //instantiate a bullet
-            //GameObject.Instantiate(bullet, this.transform.position+ bullet.transform.position, this.transform.rotation* bullet.transform.rotation);
+            GameObject.Instantiate(bullet, offset.transform.position, offset.transform.rotation);
             counter = 0;
         }
     }
