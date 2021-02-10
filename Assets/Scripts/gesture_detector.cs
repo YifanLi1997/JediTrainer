@@ -36,7 +36,6 @@ public class gesture_detector : MonoBehaviour
 
     public GameObject forceeffect;
     public GameObject explose;
-    public GameObject lightningeffect;
     public GameObject healeffect;
 
     public Image lifebar;
@@ -76,10 +75,10 @@ public class gesture_detector : MonoBehaviour
             //Debug.Log(lokedtarget);
         }
 
-        if (hasregognized && (lokedtarget || forcegesture.name=="heal"))
+        if (hasregognized && (lokedtarget || forcegesture.name == "heal"))
         {
             //Debug.Log("ok");
-            
+
             Callforce(forcegesture.name);
         }
 
@@ -196,8 +195,8 @@ public class gesture_detector : MonoBehaviour
 
     void Callforce(string name)
     {
-       Debug.Log(name);
-        if (targetfroce == null && name!="heal")
+        Debug.Log(name);
+        if (targetfroce == null && name != "heal")
         {
             lokedtarget = false;
             return;
@@ -230,7 +229,7 @@ public class gesture_detector : MonoBehaviour
             counter++;
             if (counter > 100)
             {
-                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation),3);
+                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
                 GameObject.Destroy(targetfroce);
                 lokedtarget = false;
                 counter = 0;
@@ -239,7 +238,7 @@ public class gesture_detector : MonoBehaviour
         }
         if (name == "lightning")
         {
-           
+
             if (init)
             {
                 forcehand.transform.GetChild(1).gameObject.SetActive(true);
@@ -253,7 +252,7 @@ public class gesture_detector : MonoBehaviour
             counter++;
             if (counter > 100)
             {
-                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation),3);
+                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
                 GameObject.Destroy(targetfroce);
                 forcehand.transform.GetChild(1).gameObject.SetActive(false);
                 lokedtarget = false;
@@ -278,7 +277,7 @@ public class gesture_detector : MonoBehaviour
 
         }
 
-        
+
 
         if (init)
             init = false;
@@ -291,4 +290,3 @@ public class gesture_detector : MonoBehaviour
 
 
 }
-
