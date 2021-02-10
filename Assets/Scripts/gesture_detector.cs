@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 [System.Serializable]
 public struct Gesture
@@ -36,6 +37,10 @@ public class gesture_detector : MonoBehaviour
     public GameObject forceeffect;
     public GameObject explose;
     public GameObject lightningeffect;
+    public GameObject healeffect;
+
+    public Image lifebar;
+    public Image manabar;
 
 
     // Start is called before the first frame update
@@ -66,13 +71,15 @@ public class gesture_detector : MonoBehaviour
         {
             forcegesture = EndMov();
             hasregognized = !forcegesture.Equals(new Gesture());
+
             //Debug.Log(hasregognized);
             //Debug.Log(lokedtarget);
         }
 
-        if (hasregognized && lokedtarget )
+        if (hasregognized && (lokedtarget || forcegesture.name=="heal"))
         {
             //Debug.Log("ok");
+            
             Callforce(forcegesture.name);
         }
 
@@ -169,7 +176,7 @@ public class gesture_detector : MonoBehaviour
         {
             //Debug.Log(mov.name);
             float sumDist = 0.0f;
-            int min = Mathf.Min(10, datainterest.Count);
+            int min = Mathf.Min(9, datainterest.Count);
             //minG = Mathf.Min(min, minG);
             for (int i = 0; i < min; i++)
             {
@@ -190,7 +197,7 @@ public class gesture_detector : MonoBehaviour
     void Callforce(string name)
     {
        Debug.Log(name);
-        if (targetfroce == null)
+        if (targetfroce == null && name!="heal")
         {
             lokedtarget = false;
             return;
@@ -203,7 +210,10 @@ public class gesture_detector : MonoBehaviour
             targetfroce.transform.position += targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
             //targetfroce.transform.Rotate(new Vector3(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
             if (init)
+            {
                 GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
+                manabar.rectTransform.offsetMax -= new Vector2(30, 0);
+            }
         }
 
         if (name == "push")
@@ -211,8 +221,12 @@ public class gesture_detector : MonoBehaviour
             targetfroce.transform.LookAt(forcehand.transform);
             targetfroce.transform.position -= targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
             targetfroce.transform.position += targetfroce.transform.up * 1 * Time.smoothDeltaTime;
+
             if (init)
+            {
                 GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
+                manabar.rectTransform.offsetMax -= new Vector2(30, 0);
+            }
             counter++;
             if (counter > 100)
             {
@@ -229,8 +243,9 @@ public class gesture_detector : MonoBehaviour
             if (init)
             {
                 forcehand.transform.GetChild(1).gameObject.SetActive(true);
-                
             }
+            manabar.rectTransform.offsetMax -= new Vector2(1, 0);
+
             forcehand.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject.transform.localPosition
             = new Vector3(0.0f, (targetfroce.transform.position - forcehand.transform.position).y, (targetfroce.transform.position - forcehand.transform.position).z);
             SteamVR_Controller.Input((int)forcehand.controllerIndex).TriggerHapticPulse(5000);
@@ -246,7 +261,25 @@ public class gesture_detector : MonoBehaviour
             }
 
         }
+
+        if (name == "heal")
+        {
+
+            lifebar.rectTransform.offsetMax += new Vector2(1, 0);
+            manabar.rectTransform.offsetMax -= new Vector2(2, 0);
+            GameObject.Destroy(GameObject.Instantiate(healeffect, forcehand.transform.position, forcehand.transform.rotation), 3);
+            counter++;
+            if (counter > 100)
+            {
+                hasregognized = false;
+                counter = 0;
+                name = null;
+            }
+
+        }
+
         
+
         if (init)
             init = false;
 

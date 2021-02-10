@@ -28,7 +28,6 @@ public class reflec_laser : MonoBehaviour
         }
         if (other.gameObject == player)
         {
-            Debug.Log("alright");
             lifebar.rectTransform.offsetMax -= new Vector2(10, 0);
 
             //play music
