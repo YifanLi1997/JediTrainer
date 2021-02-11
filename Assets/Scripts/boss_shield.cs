@@ -57,7 +57,7 @@ public class boss_shield : MonoBehaviour
     {
         if (hitcount < 10)
         {
-            if (other.gameObject == lightsaber)
+            if (other.tag == "Lightsaber")
             {
                 //mat.SetVector("_HitPosition", transform.InverseTransformPoint(other.contacts[i2].point));
                 hitTime = 500;

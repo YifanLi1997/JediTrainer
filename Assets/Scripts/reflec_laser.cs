@@ -12,12 +12,12 @@ public class reflec_laser : MonoBehaviour
     public bool reflected = false;
 
     public GameObject tinyexplosion;
-    public SteamVR_TrackedObject sabercontrol;
+    //public SteamVR_TrackedObject sabercontrol;
     // Start is called before the first frame update
     void OnTriggerEnter(Collider other)
     {
         //Debug.Log("before collided");
-        if (other.gameObject == Lightsaber)
+        if (other.tag == "Lightsaber")
         {
 
             Ray ray = new Ray(this.gameObject.transform.position, this.gameObject.transform.forward);
@@ -27,7 +27,7 @@ public class reflec_laser : MonoBehaviour
             //Vector3 normal = new Vector3(other.transform.position.x, -Lightsaber.transform.position.y+ other.transform.position.y,-Lightsaber.transform.position.z + other.transform.position.z);
            // this.gameObject.transform.forward = this.gameObject.transform.forward - 2 * normal * Vector3.Dot(normal, this.gameObject.transform.forward);
             GameObject.Destroy(GameObject.Instantiate(tinyexplosion, hitInfo.transform.position, Quaternion.identity), 0.1f);
-            SteamVR_Controller.Input((int)sabercontrol.index).TriggerHapticPulse((ushort)500);
+            SteamVR_Controller.Input((int)other.transform.parent.GetComponent<SteamVR_TrackedObject>().index).TriggerHapticPulse((ushort)500);
             reflected = true;
 
 }

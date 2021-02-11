@@ -1,8 +1,4 @@
-﻿
-
-
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -14,7 +10,10 @@ using UnityEngine.UI;
 public class throw_saber : MonoBehaviour
 {
     public SteamVR_TrackedController forcehand;
+    public SteamVR_TrackedController otherhand;
+
     private bool forceactive = false;
+    private bool otheractive = false;
     private bool record = false;
     public List<Gesture> forcemovements;
     public float thresholdmovement = 0.05f;
@@ -25,7 +24,7 @@ public class throw_saber : MonoBehaviour
 
     private Gesture forcegesture;
     private Transform initpossaber;
-    public GameObject lightsaber;
+    private GameObject lightsaber;
     private int counter = 0;
     private GameObject targetfroce;
     private bool lokedtarget = false;
@@ -35,18 +34,19 @@ public class throw_saber : MonoBehaviour
     public Image lifebar;
     public Image manabar;
 
-    private float throwforce = 600;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        lightsaber = this.gameObject;
         forcehand.TriggerClicked += onTrigclic;
         forcehand.TriggerUnclicked += offTrigclic;
+        otherhand.TriggerClicked += onTrigclicO;
+        otherhand.TriggerUnclicked += offTrigclicO;
         forcegesture = new Gesture();
         targetfroce = new GameObject();
         initpossaber = lightsaber.transform;
-
     }
 
     // Update is called once per frame
@@ -67,7 +67,8 @@ public class throw_saber : MonoBehaviour
         {
             forcegesture = EndMov();
             hasregognized = !forcegesture.Equals(new Gesture());
-           
+            if (otheractive)
+                hasregognized = false;
             //Debug.Log(hasregognized);
             //Debug.Log(lokedtarget);
         }
@@ -91,6 +92,16 @@ public class throw_saber : MonoBehaviour
     public void offTrigclic(object sender, ClickedEventArgs e)
     {
         forceactive = false;
+    }
+
+    public void onTrigclicO(object sender, ClickedEventArgs e)
+    {
+        otheractive = true;
+    }
+
+    public void offTrigclicO(object sender, ClickedEventArgs e)
+    {
+        otheractive = false;
     }
 
     void Initmov()
@@ -178,38 +189,37 @@ public class throw_saber : MonoBehaviour
 
     void Callforce(Gesture force)
     {
-
-        if (force.name == "throw")
-        {
-
-            Vector3 direction = forcehand.transform.forward;
-
-            
-            if (counter < 100)
-            {
-                lightsaber.transform.position += direction * 10.0f * Time.smoothDeltaTime;
-                lightsaber.transform.Rotate(new Vector3(0,10,0)* 100.0f * Time.smoothDeltaTime);
-
-            }
-            counter++;
-            if (counter < 200 && counter >99)
-            {
-                lightsaber.transform.position -= direction * 10.0f * Time.smoothDeltaTime;
-                lightsaber.transform.Rotate(new Vector3(0, -10, 0) * 100.0f * Time.smoothDeltaTime);
-            }
-            if (counter == 200)
-            {
-                counter = 0;
-                hasregognized = false;
-                lightsaber.transform.position = forcehand.transform.position;
-                lightsaber.transform.rotation = initpossaber.rotation;
-                return;
-                
-            }
-
-
-        }
         
+            if (force.name == "throw")
+            {
+
+                Vector3 direction = forcehand.transform.forward;
+
+
+                if (counter < 100)
+                {
+                    lightsaber.transform.position += direction * 10.0f * Time.smoothDeltaTime;
+                    lightsaber.transform.Rotate(new Vector3(0, 10, 0) * 100.0f * Time.smoothDeltaTime);
+
+                }
+                counter++;
+                if (counter < 200 && counter > 99)
+                {
+                    lightsaber.transform.position -= direction * 10.0f * Time.smoothDeltaTime;
+                    lightsaber.transform.Rotate(new Vector3(0, -10, 0) * 100.0f * Time.smoothDeltaTime);
+                }
+                if (counter == 200)
+                {
+                    counter = 0;
+                    hasregognized = false;
+                    lightsaber.transform.position = forcehand.transform.position;
+                    lightsaber.transform.rotation = initpossaber.rotation;
+                    return;
+
+                }
+
+
+            }
 
         
 
