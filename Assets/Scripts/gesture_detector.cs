@@ -149,10 +149,12 @@ public class gesture_detector : MonoBehaviour
         {
             if (forcemovements.Count > 0)
             {
-                g = Recognise_gesture();
-                //Debug.Log(g.name);
-                //Callforce(g);
-                //g.Onregognize.Invoke()
+                if(datainterest.Count>4)
+                    g = Recognise_gesture();
+                else
+                    Debug.Log("not a motion");
+
+
             }
             else
             {

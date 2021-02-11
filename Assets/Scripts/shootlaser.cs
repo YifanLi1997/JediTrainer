@@ -13,6 +13,6 @@ public class shootlaser : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        this.gameObject.transform.position += this.gameObject.transform.forward * 3.0f * Time.smoothDeltaTime;//this.gameObject.transform.parent.gameObject.transform.forward * 1.0f * Time.smoothDeltaTime;
+        this.gameObject.transform.position += this.gameObject.transform.forward * 5.0f * Time.smoothDeltaTime;//this.gameObject.transform.parent.gameObject.transform.forward * 1.0f * Time.smoothDeltaTime;
     }
 }

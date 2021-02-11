@@ -24,6 +24,7 @@ public class throw_saber : MonoBehaviour
     private bool hasregognized;
 
     private Gesture forcegesture;
+    private Transform initpossaber;
     public GameObject lightsaber;
     private int counter = 0;
     private GameObject targetfroce;
@@ -34,6 +35,8 @@ public class throw_saber : MonoBehaviour
     public Image lifebar;
     public Image manabar;
 
+    private float throwforce = 600;
+
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +45,7 @@ public class throw_saber : MonoBehaviour
         forcehand.TriggerUnclicked += offTrigclic;
         forcegesture = new Gesture();
         targetfroce = new GameObject();
+        initpossaber = lightsaber.transform;
 
     }
 
@@ -63,7 +67,7 @@ public class throw_saber : MonoBehaviour
         {
             forcegesture = EndMov();
             hasregognized = !forcegesture.Equals(new Gesture());
-            Debug.Log("end");
+           
             //Debug.Log(hasregognized);
             //Debug.Log(lokedtarget);
         }
@@ -95,7 +99,6 @@ public class throw_saber : MonoBehaviour
         datainterest = new List<Vector3>();
         record = true;
         data.Add(forcehand.transform.position);
-        Debug.Log("Init");
 
     }
 
@@ -128,7 +131,10 @@ public class throw_saber : MonoBehaviour
         {
             if (forcemovements.Count > 0)
             {
-                g = Recognise_gesture();
+                if (datainterest.Count > 4)
+                    g = Recognise_gesture();
+                else
+                    Debug.Log("not a motion");
 
             }
             else
@@ -176,26 +182,29 @@ public class throw_saber : MonoBehaviour
         if (force.name == "throw")
         {
 
-            Vector3 direction = force.Postion_data[force.Postion_data.Count - 1] - force.Postion_data[force.Postion_data.Count - 2];
+            Vector3 direction = forcehand.transform.forward;
 
             
-            if (counter < 1000)
+            if (counter < 100)
             {
-                lightsaber.transform.position += direction * 5.0f * Time.smoothDeltaTime;
-                lightsaber.transform.Rotate(new Vector3(0,10,0)* 5.0f * Time.smoothDeltaTime);
+                lightsaber.transform.position += direction * 10.0f * Time.smoothDeltaTime;
+                lightsaber.transform.Rotate(new Vector3(0,10,0)* 100.0f * Time.smoothDeltaTime);
 
             }
             counter++;
-            if (counter < 2000 && counter >999)
+            if (counter < 200 && counter >99)
             {
-                lightsaber.transform.position -= direction * 5.0f * Time.smoothDeltaTime;
-                lightsaber.transform.Rotate(new Vector3(0, -10, 0) * 5.0f * Time.smoothDeltaTime);
+                lightsaber.transform.position -= direction * 10.0f * Time.smoothDeltaTime;
+                lightsaber.transform.Rotate(new Vector3(0, -10, 0) * 100.0f * Time.smoothDeltaTime);
             }
-            if (counter == 2000)
+            if (counter == 200)
             {
                 counter = 0;
-                return;
                 hasregognized = false;
+                lightsaber.transform.position = forcehand.transform.position;
+                lightsaber.transform.rotation = initpossaber.rotation;
+                return;
+                
             }
 
 
