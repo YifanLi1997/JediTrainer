@@ -5,19 +5,19 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 [System.Serializable]
-public struct Gesture
-{
-    public string name;
-    public List<Vector3> Postion_data;
-    //public UnityEvent Onregognize;
 
-}
 
-public class gesture_detector : MonoBehaviour
+public class gesture_detector_boss : MonoBehaviour
 {
     public SteamVR_TrackedController forcehand;
+    public SteamVR_TrackedController otherhand;
+
     private bool forceactive = false;
+    private bool otheractive = false;
     private bool record = false;
+    private bool init;
+    private bool doingsomething = false;
+
     public List<Gesture> forcemovements;
     public float thresholdmovement = 0.05f;
     private List<Vector3> data, datainterest;
@@ -32,10 +32,8 @@ public class gesture_detector : MonoBehaviour
     private GameObject targetfroce;
     private bool lokedtarget = false;
     private Vector3 Offset = new Vector3(0.0f, 1.0f, 0.0f);
-    private bool init;
+    private int number_of_child;
 
-    public GameObject forceeffect;
-    public GameObject explose;
     public GameObject healeffect;
 
     public Image lifebar;
@@ -47,37 +45,43 @@ public class gesture_detector : MonoBehaviour
     {
         forcehand.TriggerClicked += onTrigclic;
         forcehand.TriggerUnclicked += offTrigclic;
+        otherhand.TriggerClicked += onTrigclicO;
+        otherhand.TriggerUnclicked += offTrigclicO;
         forcegesture = new Gesture();
         targetfroce = new GameObject();
-        }
+        number_of_child = forcehand.gameObject.transform.childCount + 1;
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (forceactive && !record)
+        if (forceactive && !record && !doingsomething && !otheractive)
         {
             Initmov();
-            
         }
 
 
-        if (forceactive && record)
+        if (forceactive && record && !doingsomething && !otheractive)
         {
             UpdateMov();
-            
         }
 
-        if (!forceactive && record)
+        if (!forceactive && record && !doingsomething)
         {
             forcegesture = EndMov();
-            
             hasregognized = !forcegesture.Equals(new Gesture());
+            Debug.Log(forcegesture.name);
             Debug.Log(hasregognized);
+            if (forcehand.gameObject.transform.childCount > number_of_child)
+                hasregognized = false;
+            if (otheractive)
+                hasregognized = false;
+            //Debug.Log(hasregognized);
+            //Debug.Log(lokedtarget);
         }
 
-        if (hasregognized && (lokedtarget || forcegesture.name == "heal"))
+        if (hasregognized && (lokedtarget || forcegesture.name == "heal") )
         {
-            
             Callforce(forcegesture.name);
         }
 
@@ -96,12 +100,11 @@ public class gesture_detector : MonoBehaviour
         {
             target = hitInfo.collider.gameObject;
             //Debug.Log(target.name);
-            if (target.tag == "droid")
+            if (target.name == "Shield")
             {
-                Debug.Log("hit !");
                 lokedtarget = true;
                 init = true;
-                targetfroce = target.gameObject.transform.parent.gameObject;
+                targetfroce = target.gameObject;
             }
         }
     }
@@ -109,6 +112,16 @@ public class gesture_detector : MonoBehaviour
     public void offTrigclic(object sender, ClickedEventArgs e)
     {
         forceactive = false;
+    }
+
+    public void onTrigclicO(object sender, ClickedEventArgs e)
+    {
+        otheractive = true;
+    }
+
+    public void offTrigclicO(object sender, ClickedEventArgs e)
+    {
+        otheractive = false;
     }
 
     void Initmov()
@@ -149,7 +162,7 @@ public class gesture_detector : MonoBehaviour
         {
             if (forcemovements.Count > 0)
             {
-                if(datainterest.Count>4)
+                if (datainterest.Count > 4)
                     g = Recognise_gesture();
                 else
                     Debug.Log("not a motion");
@@ -177,7 +190,7 @@ public class gesture_detector : MonoBehaviour
         {
             //Debug.Log(mov.name);
             float sumDist = 0.0f;
-            int min = Mathf.Min(9, datainterest.Count);
+            int min = Mathf.Min(18, datainterest.Count);
             //minG = Mathf.Min(min, minG);
             for (int i = 0; i < min; i++)
             {
@@ -197,50 +210,17 @@ public class gesture_detector : MonoBehaviour
 
     void Callforce(string name)
     {
-        Debug.Log(name);
+        
         if (targetfroce == null && name != "heal")
         {
             lokedtarget = false;
             return;
         }
 
-        if (name == "pull")
-        {
-
-            targetfroce.transform.LookAt(forcehand.transform);
-            targetfroce.transform.position += targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
-            //targetfroce.transform.Rotate(new Vector3(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
-            if (init)
-            {
-                GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
-                manabar.rectTransform.offsetMax -= new Vector2(30, 0);
-            }
-        }
-
-        if (name == "push")
-        {
-            targetfroce.transform.LookAt(forcehand.transform);
-            targetfroce.transform.position -= targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
-            targetfroce.transform.position += targetfroce.transform.up * 1 * Time.smoothDeltaTime;
-
-            if (init)
-            {
-                GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
-                manabar.rectTransform.offsetMax -= new Vector2(30, 0);
-            }
-            counter++;
-            if (counter > 100)
-            {
-                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
-                GameObject.Destroy(targetfroce);
-                lokedtarget = false;
-                counter = 0;
-            }
-
-        }
+        
         if (name == "lightning")
         {
-
+            doingsomething = true;
             if (init)
             {
                 forcehand.transform.GetChild(1).gameObject.SetActive(true);
@@ -248,24 +228,54 @@ public class gesture_detector : MonoBehaviour
             manabar.rectTransform.offsetMax -= new Vector2(1, 0);
 
             forcehand.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject.transform.localPosition
-            = new Vector3(0.0f, 0, (targetfroce.transform.position - forcehand.transform.position).z);
+            = forcehand.transform.forward * Vector3.Distance(forcehand.transform.position, targetfroce.transform.position);//new Vector3(0.0f, (targetfroce.transform.position - forcehand.transform.position).y + 2, (targetfroce.transform.position - forcehand.transform.position).z);
             SteamVR_Controller.Input((int)forcehand.controllerIndex).TriggerHapticPulse(5000);
+
+            if(!target.gameObject.GetComponent<boss_shield>().shieldoff)
+            {
+                target.gameObject.GetComponent<boss_shield>().hitTime = 500;
+                target.gameObject.GetComponent<boss_shield>().mat.SetFloat("_HitTime", 500);
+            }
+
+            else
+            {
+                targetfroce = this.gameObject.transform.parent.transform.GetChild(0).gameObject;
+                if (targetfroce.GetComponent<attack_boss>().lifebar.rectTransform.offsetMax.x < -140)
+                {
+                    GameObject.Destroy(GameObject.Instantiate(targetfroce.GetComponent<attack_boss>().Maxiexplosion, targetfroce.transform.position, targetfroce.transform.rotation), 5);
+                    GameObject.Destroy(targetfroce.transform.parent.gameObject);
+                    forcehand.transform.GetChild(1).gameObject.SetActive(false);
+                    lokedtarget = false;
+                    counter = 0;
+                    doingsomething = false;
+                    hasregognized = false;
+                    return;
+                }
+                else
+                {
+                    
+                    targetfroce.GetComponent<attack_boss>().lifebar.rectTransform.offsetMax -= new Vector2(0.5f, 0);
+                }
+            }
+
 
             counter++;
             if (counter > 100)
             {
-                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
-                GameObject.Destroy(targetfroce);
+                if (target.name == "Shield")
+                    target.GetComponent<boss_shield>().hitcount += 4;
                 forcehand.transform.GetChild(1).gameObject.SetActive(false);
                 lokedtarget = false;
                 counter = 0;
+                doingsomething = false;
+                hasregognized = false;
             }
 
         }
 
         if (name == "heal")
         {
-
+            doingsomething = true;
             lifebar.rectTransform.offsetMax += new Vector2(1, 0);
             manabar.rectTransform.offsetMax -= new Vector2(2, 0);
             GameObject.Destroy(GameObject.Instantiate(healeffect, forcehand.transform.position, forcehand.transform.rotation), 3);
@@ -275,6 +285,7 @@ public class gesture_detector : MonoBehaviour
                 hasregognized = false;
                 counter = 0;
                 name = null;
+                doingsomething = false;
             }
 
         }

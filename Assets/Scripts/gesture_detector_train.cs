@@ -5,15 +5,9 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 [System.Serializable]
-public struct Gesture
-{
-    public string name;
-    public List<Vector3> Postion_data;
-    //public UnityEvent Onregognize;
 
-}
 
-public class gesture_detector : MonoBehaviour
+public class gesture_detector_train : MonoBehaviour
 {
     public SteamVR_TrackedController forcehand;
     private bool forceactive = false;
@@ -31,7 +25,6 @@ public class gesture_detector : MonoBehaviour
     private int counter = 0;
     private GameObject targetfroce;
     private bool lokedtarget = false;
-    private Vector3 Offset = new Vector3(0.0f, 1.0f, 0.0f);
     private bool init;
 
     public GameObject forceeffect;
@@ -49,7 +42,7 @@ public class gesture_detector : MonoBehaviour
         forcehand.TriggerUnclicked += offTrigclic;
         forcegesture = new Gesture();
         targetfroce = new GameObject();
-        }
+    }
 
     // Update is called once per frame
     void FixedUpdate()
@@ -57,27 +50,27 @@ public class gesture_detector : MonoBehaviour
         if (forceactive && !record)
         {
             Initmov();
-            
+
         }
 
 
         if (forceactive && record)
         {
             UpdateMov();
-            
+
         }
 
         if (!forceactive && record)
         {
             forcegesture = EndMov();
-            
+
             hasregognized = !forcegesture.Equals(new Gesture());
-            Debug.Log(hasregognized);
+            Debug.Log(forcegesture.name);
         }
 
         if (hasregognized && (lokedtarget || forcegesture.name == "heal"))
         {
-            
+            Debug.Log("ok");
             Callforce(forcegesture.name);
         }
 
@@ -98,7 +91,6 @@ public class gesture_detector : MonoBehaviour
             //Debug.Log(target.name);
             if (target.tag == "droid")
             {
-                Debug.Log("hit !");
                 lokedtarget = true;
                 init = true;
                 targetfroce = target.gameObject.transform.parent.gameObject;
@@ -149,7 +141,7 @@ public class gesture_detector : MonoBehaviour
         {
             if (forcemovements.Count > 0)
             {
-                if(datainterest.Count>4)
+                if (datainterest.Count > 4)
                     g = Recognise_gesture();
                 else
                     Debug.Log("not a motion");
@@ -177,7 +169,7 @@ public class gesture_detector : MonoBehaviour
         {
             //Debug.Log(mov.name);
             float sumDist = 0.0f;
-            int min = Mathf.Min(9, datainterest.Count);
+            int min = Mathf.Min(7, datainterest.Count);
             //minG = Mathf.Min(min, minG);
             for (int i = 0; i < min; i++)
             {
@@ -197,7 +189,6 @@ public class gesture_detector : MonoBehaviour
 
     void Callforce(string name)
     {
-        Debug.Log(name);
         if (targetfroce == null && name != "heal")
         {
             lokedtarget = false;
@@ -207,31 +198,31 @@ public class gesture_detector : MonoBehaviour
         if (name == "pull")
         {
 
-            targetfroce.transform.LookAt(forcehand.transform);
-            targetfroce.transform.position += targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
+            //targetfroce.transform.LookAt(forcehand.transform);
+            target.gameObject.transform.position += target.gameObject.transform.forward * 5 * Time.smoothDeltaTime;
             //targetfroce.transform.Rotate(new Vector3(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
             if (init)
             {
-                GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
+                GameObject.Instantiate(forceeffect, target.gameObject.transform.position, target.gameObject.transform.rotation);
                 manabar.rectTransform.offsetMax -= new Vector2(30, 0);
             }
         }
 
         if (name == "push")
         {
-            targetfroce.transform.LookAt(forcehand.transform);
-            targetfroce.transform.position -= targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
-            targetfroce.transform.position += targetfroce.transform.up * 1 * Time.smoothDeltaTime;
+            //targetfroce.transform.LookAt(forcehand.transform);
+            target.gameObject.transform.position -= target.gameObject.transform.forward * 5 * Time.smoothDeltaTime;
+            //targetfroce.transform.position += targetfroce.transform.up * 1 * Time.smoothDeltaTime;
 
             if (init)
             {
-                GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
+                GameObject.Instantiate(forceeffect, target.gameObject.transform.position, target.gameObject.transform.rotation);
                 manabar.rectTransform.offsetMax -= new Vector2(30, 0);
             }
             counter++;
             if (counter > 100)
             {
-                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
+                GameObject.Destroy(GameObject.Instantiate(explose, target.gameObject.transform.position, target.gameObject.transform.rotation), 3);
                 GameObject.Destroy(targetfroce);
                 lokedtarget = false;
                 counter = 0;
@@ -254,7 +245,7 @@ public class gesture_detector : MonoBehaviour
             counter++;
             if (counter > 100)
             {
-                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
+                GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position, targetfroce.transform.rotation), 3);
                 GameObject.Destroy(targetfroce);
                 forcehand.transform.GetChild(1).gameObject.SetActive(false);
                 lokedtarget = false;
@@ -276,6 +267,21 @@ public class gesture_detector : MonoBehaviour
                 counter = 0;
                 name = null;
             }
+
+        }
+
+        if (name == "futur")
+        {
+            if (targetfroce.activeInHierarchy)
+            {
+                manabar.rectTransform.offsetMax -= new Vector2(30, 0);
+                hasregognized = false;
+                name = null;
+                targetfroce.transform.parent.GetChild(2).gameObject.SetActive(true);
+                targetfroce.transform.parent.GetChild(2).gameObject.GetComponent<futur_seeing>().init = true;
+            }
+
+                
 
         }
 

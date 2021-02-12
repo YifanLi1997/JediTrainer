@@ -7,7 +7,7 @@ public class FollowPath : MonoBehaviour
 {
     public PathCreator pathCreator;
     public float speed = 5;
-    float distanceTravelled = 0f;
+    public float distanceTravelled = 0f;
 
     public GameObject facingTarget;
 

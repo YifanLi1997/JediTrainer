@@ -23,10 +23,12 @@ public class reflec_laser : MonoBehaviour
             Ray ray = new Ray(this.gameObject.transform.position, this.gameObject.transform.forward);
             RaycastHit hitInfo;
             bool hasGroundTarget = Physics.Raycast(ray, out hitInfo);
-            this.gameObject.transform.forward =  Vector3.Reflect(other.transform.forward, hitInfo.normal);
-            //Vector3 normal = new Vector3(other.transform.position.x, -Lightsaber.transform.position.y+ other.transform.position.y,-Lightsaber.transform.position.z + other.transform.position.z);
-           // this.gameObject.transform.forward = this.gameObject.transform.forward - 2 * normal * Vector3.Dot(normal, this.gameObject.transform.forward);
-            GameObject.Destroy(GameObject.Instantiate(tinyexplosion, hitInfo.transform.position, Quaternion.identity), 0.1f);
+            this.gameObject.transform.forward = Vector3.Reflect(this.gameObject.transform.forward, hitInfo.normal);
+            this.gameObject.transform.forward += new Vector3(Random.RandomRange(-3, 3), Random.RandomRange(0, 8), Random.RandomRange(0, 3));
+            //this.gameObject.transform.forward *= -1;//  Vector3.Reflect(other.transform.forward, hitInfo.normal);
+            //Vector3 normal = new Vector3(-Lightsaber.transform.position.x, -Lightsaber.transform.position.y+ other.transform.position.y,-Lightsaber.transform.position.z + other.transform.position.z);
+            // this.gameObject.transform.forward = this.gameObject.transform.forward - 2 * normal * Vector3.Dot(normal, this.gameObject.transform.forward);
+            //GameObject.Destroy(GameObject.Instantiate(tinyexplosion, hitInfo.transform.position, Quaternion.identity), 0.1f);
             SteamVR_Controller.Input((int)other.transform.parent.GetComponent<SteamVR_TrackedObject>().index).TriggerHapticPulse((ushort)500);
             reflected = true;
 

@@ -20,7 +20,7 @@ public class die : MonoBehaviour
         {
 
 
-            //Debug.Log("collided");
+            Debug.Log("collided");
             //this.gameObject.GetComponent<AudioSource>().clip = explosion;
             //this.gameObject.GetComponent<AudioSource>().Play();
 

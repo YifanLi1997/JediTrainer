@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class boss_shield : MonoBehaviour
 {
-    float hitTime;
-    Material mat;
+    public float hitTime;
+    public Material mat;
     public GameObject lightsaber;
     public int hitcount = 0;
     public int comp = 0;
@@ -18,6 +18,8 @@ public class boss_shield : MonoBehaviour
         {
             mat = GetComponent<Renderer>().sharedMaterial;
             mat.SetFloat("_Opacity", 0.3f);
+            mat.SetColor("_Color", Color.blue);
+            mat.SetColor("_ShieldPatternColor", Color.blue);
         }
 
     }

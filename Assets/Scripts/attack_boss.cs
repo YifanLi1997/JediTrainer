@@ -7,7 +7,7 @@ public class attack_boss : MonoBehaviour
 {
     public Image lifebar;
     public GameObject Maxiexplosion;
-    private Vector2 lifemin = new Vector2(-140,0);
+    public Vector2 lifemin = new Vector2(-140,0);
 
 
     void OnTriggerEnter(Collider other)
