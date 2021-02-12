@@ -13,6 +13,7 @@ public class gesture_detector_train : MonoBehaviour
     private bool forceactive = false;
     private bool record = false;
     public List<Gesture> forcemovements;
+    private bool doingsomething = false;
     public float thresholdmovement = 0.05f;
     private List<Vector3> data, datainterest;
     public bool training_mode = false;
@@ -47,20 +48,20 @@ public class gesture_detector_train : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (forceactive && !record)
+        if (forceactive && !record && !doingsomething)
         {
             Initmov();
 
         }
 
 
-        if (forceactive && record)
+        if (forceactive && record && !doingsomething)
         {
             UpdateMov();
 
         }
 
-        if (!forceactive && record)
+        if (!forceactive && record && !doingsomething)
         {
             forcegesture = EndMov();
 
@@ -197,7 +198,6 @@ public class gesture_detector_train : MonoBehaviour
 
         if (name == "pull")
         {
-
             //targetfroce.transform.LookAt(forcehand.transform);
             target.gameObject.transform.position += target.gameObject.transform.forward * 5 * Time.smoothDeltaTime;
             //targetfroce.transform.Rotate(new Vector3(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
@@ -210,6 +210,7 @@ public class gesture_detector_train : MonoBehaviour
 
         if (name == "push")
         {
+            doingsomething = true;
             //targetfroce.transform.LookAt(forcehand.transform);
             target.gameObject.transform.position -= target.gameObject.transform.forward * 5 * Time.smoothDeltaTime;
             //targetfroce.transform.position += targetfroce.transform.up * 1 * Time.smoothDeltaTime;
@@ -225,13 +226,14 @@ public class gesture_detector_train : MonoBehaviour
                 GameObject.Destroy(GameObject.Instantiate(explose, target.gameObject.transform.position, target.gameObject.transform.rotation), 3);
                 GameObject.Destroy(targetfroce.transform.parent.gameObject);
                 lokedtarget = false;
+                doingsomething = false;
                 counter = 0;
             }
 
         }
         if (name == "lightning")
         {
-
+            doingsomething = true;
             if (init)
             {
                 forcehand.transform.GetChild(1).gameObject.SetActive(true);
@@ -249,6 +251,8 @@ public class gesture_detector_train : MonoBehaviour
                 GameObject.Destroy(targetfroce.transform.parent.gameObject);
                 forcehand.transform.GetChild(1).gameObject.SetActive(false);
                 lokedtarget = false;
+                doingsomething = false;
+                hasregognized = false;
                 counter = 0;
             }
 
@@ -256,7 +260,8 @@ public class gesture_detector_train : MonoBehaviour
 
         if (name == "heal")
         {
-
+            doingsomething = true;
+            doingsomething = true;
             lifebar.rectTransform.offsetMax += new Vector2(1, 0);
             manabar.rectTransform.offsetMax -= new Vector2(2, 0);
             GameObject.Destroy(GameObject.Instantiate(healeffect, forcehand.transform.position, forcehand.transform.rotation), 3);
@@ -266,6 +271,7 @@ public class gesture_detector_train : MonoBehaviour
                 hasregognized = false;
                 counter = 0;
                 name = null;
+                doingsomething = false;
             }
 
         }
@@ -277,8 +283,8 @@ public class gesture_detector_train : MonoBehaviour
                 manabar.rectTransform.offsetMax -= new Vector2(30, 0);
                 hasregognized = false;
                 name = null;
-                targetfroce.transform.parent.GetChild(2).gameObject.SetActive(true);
-                targetfroce.transform.parent.GetChild(2).gameObject.GetComponent<futur_seeing>().init = true;
+                targetfroce.transform.parent.GetChild(1).gameObject.SetActive(true);
+                targetfroce.transform.parent.GetChild(1).gameObject.GetComponent<futur_seeing>().init = true;
             }
 
                 
