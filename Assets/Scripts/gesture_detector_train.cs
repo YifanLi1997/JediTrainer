@@ -223,7 +223,7 @@ public class gesture_detector_train : MonoBehaviour
             if (counter > 100)
             {
                 GameObject.Destroy(GameObject.Instantiate(explose, target.gameObject.transform.position, target.gameObject.transform.rotation), 3);
-                GameObject.Destroy(targetfroce);
+                GameObject.Destroy(targetfroce.transform.parent.gameObject);
                 lokedtarget = false;
                 counter = 0;
             }
@@ -246,7 +246,7 @@ public class gesture_detector_train : MonoBehaviour
             if (counter > 100)
             {
                 GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position, targetfroce.transform.rotation), 3);
-                GameObject.Destroy(targetfroce);
+                GameObject.Destroy(targetfroce.transform.parent.gameObject);
                 forcehand.transform.GetChild(1).gameObject.SetActive(false);
                 lokedtarget = false;
                 counter = 0;
