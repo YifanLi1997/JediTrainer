@@ -26,10 +26,10 @@ public class move_to_traget : MonoBehaviour
 
         counter++;
 
-        if (counter > 300)
+        if (counter > 100)
         {
             //instantiate a bullet
-            GameObject.Instantiate(bullet, offset.transform.position, offset.transform.rotation);
+            GameObject.Destroy(GameObject.Instantiate(bullet, offset.transform.position, offset.transform.rotation),15);
             counter = 0;
         }
     }

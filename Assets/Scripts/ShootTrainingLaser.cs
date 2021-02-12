@@ -33,5 +33,6 @@ public class ShootTrainingLaser : MonoBehaviour
     private void Shoot()
     {
         GameObject laser = Instantiate(laserPrefab, shootingPlace.position, shootingPlace.rotation) as GameObject;
+        GameObject.Destroy(laser, 15);
     }
 }
