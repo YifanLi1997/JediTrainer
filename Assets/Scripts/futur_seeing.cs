@@ -8,9 +8,13 @@ public class futur_seeing : MonoBehaviour
     private float inittrans;
     private int compteur;
     public bool init;
+    public Material mat;
     // Start is called before the first frame update
     void Start()
     {
+        mat.SetFloat("_Opacity", 0.8f);
+        mat.SetColor("_Color", Color.green);
+        mat.SetColor("_ShieldPatternColor", Color.green);
     }
 
     // Update is called once per frame

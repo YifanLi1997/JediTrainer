@@ -7,7 +7,7 @@ public class move_to_traget : MonoBehaviour
     public GameObject thePlayer;
     public GameObject bullet;
     public float speed = 1.0f;
-    public GameObject offset;
+    public GameObject offset, bulletclone;
     int counter = 0;
     
 
@@ -29,7 +29,9 @@ public class move_to_traget : MonoBehaviour
         if (counter > 100)
         {
             //instantiate a bullet
-            GameObject.Destroy(GameObject.Instantiate(bullet, offset.transform.position, offset.transform.rotation),15);
+            bulletclone = GameObject.Instantiate(bullet, offset.transform.position, offset.transform.rotation) as GameObject;
+            bulletclone.transform.LookAt(thePlayer.transform.position);
+            GameObject.Destroy(bulletclone, 15);
             counter = 0;
         }
     }

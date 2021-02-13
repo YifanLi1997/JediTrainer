@@ -46,7 +46,7 @@ public class Combat : MonoBehaviour
             k++;
             counteur = 0;
         }
-        if ((counteur > 1000) && (this.gameObject.transform.childCount == 1))
+        if ((counteur > 1000) && (this.gameObject.transform.childCount == 3))
             this.gameObject.SetActive(false);
 
     }

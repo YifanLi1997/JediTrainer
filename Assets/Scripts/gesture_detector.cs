@@ -42,6 +42,8 @@ public class gesture_detector : MonoBehaviour
     public Image lifebar;
     public Image manabar;
 
+    public AudioClip heal;
+
 
     // Start is called before the first frame update
     void Start()
@@ -89,7 +91,7 @@ public class gesture_detector : MonoBehaviour
     public void onTrigclic(object sender, ClickedEventArgs e)
     {
         forceactive = true;
-
+        init = true;
         Ray ray = new Ray(forcehand.transform.position, forcehand.transform.forward);
         RaycastHit hitInfo;
         bool hasGroundTarget = Physics.Raycast(ray, out hitInfo);
@@ -101,7 +103,7 @@ public class gesture_detector : MonoBehaviour
             {
                 Debug.Log("hit !");
                 lokedtarget = true;
-                init = true;
+                
                 targetfroce = target.gameObject.transform.parent.gameObject;
             }
         }
@@ -229,12 +231,15 @@ public class gesture_detector : MonoBehaviour
             {
                 GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
                 manabar.rectTransform.offsetMax -= new Vector2(30, 0);
+
             }
             counter++;
             if (counter > 100)
             {
                 GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
+
                 GameObject.Destroy(targetfroce);
+
                 lokedtarget = false;
                 counter = 0;
                 doingsomething = false;
@@ -261,6 +266,7 @@ public class gesture_detector : MonoBehaviour
             if (counter > 100)
             {
                 GameObject.Destroy(GameObject.Instantiate(explose, targetfroce.transform.position + Offset, targetfroce.transform.rotation), 3);
+
                 GameObject.Destroy(targetfroce);
                 forcehand.transform.GetChild(1).gameObject.SetActive(false);
                 lokedtarget = false;
@@ -275,6 +281,14 @@ public class gesture_detector : MonoBehaviour
         if (name == "heal")
         {
             doingsomething = true;
+
+            if (init)
+            {
+                forcehand.GetComponent<AudioSource>().clip = heal;
+                forcehand.GetComponent<AudioSource>().Play();
+
+            }
+
             lifebar.rectTransform.offsetMax += new Vector2(1, 0);
             manabar.rectTransform.offsetMax -= new Vector2(2, 0);
             GameObject.Destroy(GameObject.Instantiate(healeffect, forcehand.transform.position, forcehand.transform.rotation), 3);
@@ -285,6 +299,7 @@ public class gesture_detector : MonoBehaviour
                 counter = 0;
                 name = null;
                 doingsomething = false;
+                forcehand.GetComponent<AudioSource>().Stop();
             }
 
         }
