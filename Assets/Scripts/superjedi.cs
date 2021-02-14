@@ -218,8 +218,9 @@ public class superjedi : MonoBehaviour
 
         if (init)
         {
-            leftSaber = GameObject.Instantiate(lightsaberR, forcehandL.transform.position, forcehandL.transform.rotation*Quaternion.Euler(0,-90,0)) as GameObject;
-            leftSaber.transform.parent = forcehandL.transform;
+            forcehandL.transform.GetChild(2).gameObject.SetActive(true);
+            //leftSaber = GameObject.Instantiate(lightsaberR, forcehandL.transform.position, forcehandL.transform.rotation*Quaternion.Euler(0,-90,0)) as GameObject;
+            //leftSaber.transform.parent = forcehandL.transform;
             GameObject.Destroy(GameObject.Instantiate(shockwave, forcehandL.transform.position, forcehandL.transform.rotation), 5);
 
             GameObject.Destroy(GameObject.Instantiate(lighteffect, forcehandL.transform.position, forcehandL.transform.rotation), 5);
@@ -227,15 +228,23 @@ public class superjedi : MonoBehaviour
             GameObject.Destroy(GameObject.Instantiate(lighteffect, forcehandL.transform.position, forcehandL.transform.rotation), 5);
             GameObject.Destroy(GameObject.Instantiate(lighteffect, forcehandL.transform.position, forcehandL.transform.rotation), 5);
             GameObject.Destroy(GameObject.Instantiate(lighteffect, forcehandL.transform.position, forcehandL.transform.rotation), 5);
-
-            leftSaber.GetComponent<throw_saber>().forcehand = forcehandL;
-            leftSaber.GetComponent<throw_saber>().otherhand = forcehandR;
+            if(this.gameObject.tag=="boss")
+                this.gameObject.GetComponent<gesture_detector_boss>().enabled = false;
+            else
+                this.gameObject.GetComponent<gesture_detector_train>().enabled = false;
+            //leftSaber.GetComponent<throw_saber>().forcehand = forcehandL;
+            //leftSaber.GetComponent<throw_saber>().otherhand = forcehandR;
+            //leftSaber.transform.GetChild(2).GetComponent<LaserSwordScript>().forcehand = forcehandL;
             manabar.rectTransform.offsetMax -= new Vector2(150, 0);
         }
         counter++;
-        if (counter > 1000)
+        if (counter > 1500)
         {
-            GameObject.Destroy(leftSaber);
+            forcehandL.transform.GetChild(2).gameObject.SetActive(false);
+            if (this.gameObject.tag == "boss")
+                this.gameObject.GetComponent<gesture_detector_boss>().enabled = true;
+            else
+                this.gameObject.GetComponent<gesture_detector_train>().enabled = true;
             counter = 0;
             hasregognized = false;
             return;

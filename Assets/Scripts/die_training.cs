@@ -16,7 +16,7 @@ public class die_training : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         //Debug.Log("before collided");
-        if (other.gameObject == Lightsaber)
+        if (other.gameObject.tag == "Lightsaber")
         {
 
             GameObject.Destroy(GameObject.Instantiate(tinyexplosion, this.transform.position, this.transform.rotation), 3);

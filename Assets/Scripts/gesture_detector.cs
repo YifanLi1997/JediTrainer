@@ -75,7 +75,6 @@ public class gesture_detector : MonoBehaviour
             forcegesture = EndMov();
             
             hasregognized = !forcegesture.Equals(new Gesture());
-            Debug.Log(hasregognized);
         }
 
         if (hasregognized && (lokedtarget || forcegesture.name == "heal"))
@@ -209,7 +208,7 @@ public class gesture_detector : MonoBehaviour
 
         if (name == "pull")
         {
-
+            //doingsomething = true;
             targetfroce.transform.LookAt(forcehand.transform);
             targetfroce.transform.position += targetfroce.transform.forward * 5 * Time.smoothDeltaTime;
             //targetfroce.transform.Rotate(new Vector3(Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f), Random.Range(0.0f, 90.0f)));
@@ -218,6 +217,15 @@ public class gesture_detector : MonoBehaviour
                 GameObject.Instantiate(forceeffect, targetfroce.transform.position + Offset, targetfroce.transform.rotation);
                 manabar.rectTransform.offsetMax -= new Vector2(30, 0);
             }
+           /* counter++;
+            if (counter > 400)
+            {
+                GameObject.Destroy(targetfroce.transform.parent.gameObject);
+                lokedtarget = false;
+                doingsomething = false;
+                hasregognized = false;
+                counter = 0;
+            }*/
         }
 
         if (name == "push")
@@ -244,7 +252,6 @@ public class gesture_detector : MonoBehaviour
                 counter = 0;
                 doingsomething = false;
                 hasregognized = false;
-                counter = 0;
                 return;
             }
 
@@ -259,7 +266,7 @@ public class gesture_detector : MonoBehaviour
             manabar.rectTransform.offsetMax -= new Vector2(1, 0);
 
             forcehand.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject.transform.localPosition
-            = new Vector3(0.0f, 0, (targetfroce.transform.position - forcehand.transform.position).z);
+            =  Vector3.Normalize(new Vector3(0.0f, 0, (targetfroce.transform.position - forcehand.transform.position).z))*Vector3.Distance(targetfroce.transform.position, forcehand.transform.position);
             SteamVR_Controller.Input((int)forcehand.controllerIndex).TriggerHapticPulse(5000);
 
             counter++;

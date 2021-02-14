@@ -5,8 +5,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace DigitalRuby.LaserSword
-{
+
     [ExecuteInEditMode]
     public class LaserSwordBladeCreatorScript : MonoBehaviour
     {
@@ -315,4 +314,3 @@ namespace DigitalRuby.LaserSword
 #endif
 
     }
-}

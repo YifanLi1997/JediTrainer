@@ -8,6 +8,7 @@ TagManager:
   - Walls
   - Lightsaber
   - droid
+  - boss
   layers:
   - Default
   - TransparentFX

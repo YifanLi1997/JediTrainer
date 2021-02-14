@@ -35,6 +35,7 @@ public class gesture_detector_boss : MonoBehaviour
     private int number_of_child;
 
     public GameObject healeffect;
+    public GameObject hit;
 
     public Image lifebar;
     public Image manabar;
@@ -231,7 +232,9 @@ public class gesture_detector_boss : MonoBehaviour
             = forcehand.transform.forward * Vector3.Distance(forcehand.transform.position, targetfroce.transform.position);//new Vector3(0.0f, (targetfroce.transform.position - forcehand.transform.position).y + 2, (targetfroce.transform.position - forcehand.transform.position).z);
             SteamVR_Controller.Input((int)forcehand.controllerIndex).TriggerHapticPulse(5000);
 
-            if(!target.gameObject.GetComponent<boss_shield>().shieldoff)
+            GameObject.Destroy(GameObject.Instantiate(hit, target.gameObject.transform.position, target.gameObject.transform.rotation), 5);
+
+            if (!target.gameObject.GetComponent<boss_shield>().shieldoff)
             {
                 target.gameObject.GetComponent<boss_shield>().hitTime = 500;
                 target.gameObject.GetComponent<boss_shield>().mat.SetFloat("_HitTime", 500);

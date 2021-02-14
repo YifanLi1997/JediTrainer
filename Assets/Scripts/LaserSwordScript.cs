@@ -6,8 +6,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Events;
 
-namespace DigitalRuby.LaserSword
-{
+
+
     public class LaserSwordScript : MonoBehaviour
     {
         [Tooltip("For demo purposes, rotates the blade continously.")]
@@ -223,4 +223,3 @@ namespace DigitalRuby.LaserSword
             }
         }
     }
-}

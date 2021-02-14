@@ -10,6 +10,7 @@ public class boss_shield : MonoBehaviour
     public int hitcount = 0;
     public int comp = 0;
     public bool shieldoff = false;
+    public AudioClip explose;
     //public GameObject Laserbul;
 
     void Start()
@@ -65,6 +66,8 @@ public class boss_shield : MonoBehaviour
                 hitTime = 500;
                 mat.SetFloat("_HitTime", hitTime);
                 hitcount++;
+                this.gameObject.GetComponent<AudioSource>().clip = explose;
+                this.gameObject.GetComponent<AudioSource>().Play();
             }
             if (other.tag == "Laser")
             {
@@ -74,8 +77,11 @@ public class boss_shield : MonoBehaviour
                     hitTime = 500;
                     mat.SetFloat("_HitTime", hitTime);
                     hitcount++;
+                    this.gameObject.GetComponent<AudioSource>().clip = explose;
+                    this.gameObject.GetComponent<AudioSource>().Play();
                 }
             }
+
         }
 
         
