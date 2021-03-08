@@ -1,2 +1,2 @@
-# JediTrainer
- CAP 6121 Assignment 1
+# Jedi_training_Unity_VR_Game
+ 

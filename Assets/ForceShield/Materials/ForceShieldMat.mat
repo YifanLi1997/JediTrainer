@@ -56,7 +56,7 @@ Material:
     - _EdgeLength: 6.3
     - _HitLenght: 1
     - _HitSize: 2
-    - _HitTime: 366.66663
+    - _HitTime: 0
     - _IntersectIntensity: 0.191
     - _Opacity: 0
     - _Phong: 0.5
